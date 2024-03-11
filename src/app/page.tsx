@@ -7,8 +7,9 @@ import NoSSR from "./noSSR";
 
 export default function Home() {
   return (
-    <div>
+    <body>
+      <h1 className="text-2xl m-2">TunesToTube Clone</h1>
       <NoSSR><VideoRenderingComponent /></NoSSR>
-    </div>
+    </body>
   );
 }

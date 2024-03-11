@@ -10,8 +10,9 @@ export default function FileUploadComponent(props: any) {
   const onDrop = useCallback((files: File[]) => {
     props.onChangesInFileUploader(files);
     files.forEach(file => {
-      if (file.type === "video/mp4") {
+      if (file.type.includes("image")) {
         setVideoLoaded("✅");
+        console.log("video loaded")
       } else if (file.type === "audio/mpeg") {
         setAudioLoaded("✅");
       }
@@ -29,9 +30,11 @@ export default function FileUploadComponent(props: any) {
         <input {...getInputProps()} />
         {isDragActive ? <p>Drop the files here ...</p> : <p>Upload file</p>}
       </div>
-      <div>
+      <div className={styles.center}>
         <p>
           Audio: {audioLoaded}
+        </p>
+        <p>
           Video: {videoLoaded}
         </p>
       </div>

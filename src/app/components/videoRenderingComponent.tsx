@@ -19,9 +19,11 @@ export default function VideoRenderingComponent() {
   const load = async () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
-    ffmpeg.on('progress', ({ progress, time }) => {
-      messageRef.current.innerHTML = `${progress * 100} % (transcoded time: ${time / 1000000} s)`;
-  });
+    ffmpeg.on("progress", ({ progress, time }) => {
+      messageRef.current.innerHTML = `${progress * 100} % (transcoded time: ${
+        time / 1000000
+      } s)`;
+    });
     // toBlobURL is used to bypass CORS issue, urls with the same
     // domain can be used directly.
     await ffmpeg.load({
@@ -63,6 +65,7 @@ export default function VideoRenderingComponent() {
       new Blob([data], { type: "video/mp4" })
     );
     setVideoFinished(true);
+    console.log(videoFinished);
   };
 
   const onChangesInFileUploader = (files: any) => {
@@ -90,22 +93,27 @@ export default function VideoRenderingComponent() {
     });
   };
   return (
-    <div className={style.center}>
-      <h1>VIDEOMAKER?!!!</h1>
-      {filesAreLoaded ? (
-        <div id="converter">
-          {videoFinished ? (<video ref={videoRef} controls></video>) : null }
-          <br />
-          <button onClick={transcode}>Make video</button>
-          <p ref={messageRef}></p>
-        </div>
-      ) : (
-        <div>
-          <FileUploadComponent
-            onChangesInFileUploader={onChangesInFileUploader}
-          />
-        </div>
-      )}
+    <div>
+      <div className={style.centerfull}>
+        {filesAreLoaded ? (
+          <div id="converter">
+            <video
+              ref={videoRef}
+              className={videoFinished ? "visible" : "invisible"}
+              controls
+            ></video>
+            <br />
+            <button onClick={transcode}>Make video</button>
+            <p ref={messageRef}></p>
+          </div>
+        ) : (
+          <div>
+            <FileUploadComponent
+              onChangesInFileUploader={onChangesInFileUploader}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
