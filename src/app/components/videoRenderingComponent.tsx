@@ -12,6 +12,7 @@ export default function VideoRenderingComponent() {
   const videoRef = useRef<any>(null);
   const messageRef = useRef<any>(null);
   const [filesAreLoaded, setFilesAreLoaded] = useState(false);
+  const [videoFinished, setVideoFinished] = useState(false);
   const audio = useRef<any>(null);
   const video = useRef<any>(null);
 
@@ -61,6 +62,7 @@ export default function VideoRenderingComponent() {
     videoRef.current.src = URL.createObjectURL(
       new Blob([data], { type: "video/mp4" })
     );
+    setVideoFinished(true);
   };
 
   const onChangesInFileUploader = (files: any) => {
@@ -92,7 +94,7 @@ export default function VideoRenderingComponent() {
       <h1>VIDEOMAKER?!!!</h1>
       {filesAreLoaded ? (
         <div id="converter">
-          <video ref={videoRef} controls></video>
+          {videoFinished ? (<video ref={videoRef} controls></video>) : null }
           <br />
           <button onClick={transcode}>Make video</button>
           <p ref={messageRef}></p>
