@@ -18,11 +18,9 @@ export default function VideoRenderingComponent() {
   const load = async () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      if (!messageRef.current) return;
-      messageRef.current.innerHTML = message;
-      console.log(message);
-    });
+    ffmpeg.on('progress', ({ progress, time }) => {
+      messageRef.current.innerHTML = `${progress * 100} % (transcoded time: ${time / 1000000} s)`;
+  });
     // toBlobURL is used to bypass CORS issue, urls with the same
     // domain can be used directly.
     await ffmpeg.load({
@@ -81,12 +79,12 @@ export default function VideoRenderingComponent() {
           video.current = binaryStr;
         }
         console.log(file);
+        console.log(audio.current, video.current);
+        if (audio.current && video.current) {
+          setFilesAreLoaded(true);
+        }
       };
       reader.readAsArrayBuffer(file);
-      console.log(audio.current, video.current);
-      if (audio.current && video.current) {
-        setFilesAreLoaded(true);
-      }
     });
   };
   return (
