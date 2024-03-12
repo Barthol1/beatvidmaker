@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route"
 import SessionProvider  from "./components/SessionProvider";
+import { authOptions } from "./api/auth/[...nextauth]/authOptions";
+import LoginComponent from "./components/LoginComponent";
 
 const inter = Noto_Sans({ weight: '400', subsets: ['latin']});
 
