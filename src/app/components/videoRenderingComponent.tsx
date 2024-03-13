@@ -2,7 +2,7 @@
 
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import style from "../home.module.css";
 import FileUploadComponent from "./fileUploadComponent";
 
@@ -10,8 +10,9 @@ export default function VideoRenderingComponent() {
   const [loaded, setLoaded] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
   const videoRef = useRef<any>(null);
-  const messageRef = useRef<any>(null);
-  const [filesAreLoaded, setFilesAreLoaded] = useState(false);
+  const videoProgressRef = useRef<any>(null);
+  const [messageRef, setMessageRef] = useState("Creating video...");
+  const [startConverting, setStartConverting] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
   const audio = useRef<any>(null);
   const video = useRef<any>(null);
@@ -20,9 +21,9 @@ export default function VideoRenderingComponent() {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
     ffmpeg.on("progress", ({ progress, time }) => {
-      messageRef.current.innerHTML = `${progress * 100} % (transcoded time: ${
-        time / 1000000
-      } s)`;
+      videoProgressRef.current.innerHTML = `${
+        progress * 100
+      } % (transcoded time: ${time / 1000000} s)`;
     });
     // toBlobURL is used to bypass CORS issue, urls with the same
     // domain can be used directly.
@@ -65,7 +66,7 @@ export default function VideoRenderingComponent() {
       new Blob([data], { type: "video/mp4" })
     );
     setVideoFinished(true);
-    console.log(videoFinished);
+    setMessageRef("Video created successfully");
   };
 
   const onChangesInFileUploader = (files: any) => {
@@ -85,32 +86,49 @@ export default function VideoRenderingComponent() {
         }
         console.log(file);
         console.log(audio.current, video.current);
-        if (audio.current && video.current) {
-          setFilesAreLoaded(true);
-        }
       };
       reader.readAsArrayBuffer(file);
     });
   };
+
+  const onSubmit = () => {
+    if (audio.current && video.current) {
+      transcode();
+      setStartConverting(true);
+    }
+  };
   return (
     <div>
       <div className={style.centerfull}>
-        {filesAreLoaded ? (
+        {startConverting ? (
           <div id="converter">
+            <div className="text-center mb-5">
+              <h1 className="text-center text-2xl">{messageRef}</h1>
+              <h3 className={videoFinished ? "invisible" : "visible"}>
+                Do not close this page until complete
+              </h3>
+            </div>
+            <p ref={videoProgressRef}></p>
             <video
               ref={videoRef}
               className={videoFinished ? "visible" : "invisible"}
               controls
             ></video>
             <br />
-            <button onClick={transcode}>Make video</button>
-            <p ref={messageRef}></p>
           </div>
         ) : (
           <div>
             <FileUploadComponent
               onChangesInFileUploader={onChangesInFileUploader}
             />
+            <div className={style.center}>
+              <button
+                onClick={onSubmit}
+                className="p-2 mt-6 border rounded border-black bg-white transition hover:bg-green-500"
+              >
+                Make video
+              </button>
+            </div>
           </div>
         )}
       </div>
