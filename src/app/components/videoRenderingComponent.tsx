@@ -9,6 +9,8 @@ import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import ConvertionSelectorComponent from "./ConvertionSelectorComponent";
+import YoutubeFormComponent from "./YoutubeFormComponent";
+import { start } from "repl";
 
 export default function VideoRenderingComponent() {
   const [loaded, setLoaded] = useState(false);
@@ -112,9 +114,10 @@ export default function VideoRenderingComponent() {
   };
   return (
     <div>
-      <div className={style.centerfull}>
+      <div className={useYoutube && !startConverting ? "grid grid-cols-4" : ""}>
+        <div></div>
         {startConverting ? (
-          <div id="converter">
+          <div id="converter" className={style.centerfull}>
             <div className="text-center mb-5">
               <h1 className="text-center text-2xl">{messageRef}</h1>
               <h3 className={videoFinished ? "invisible" : "visible"}>
@@ -130,7 +133,7 @@ export default function VideoRenderingComponent() {
             <br />
           </div>
         ) : (
-          <div>
+          <div className={style.centerfull}>
             <FileUploadComponent
               onChangesInFileUploader={onChangesInFileUploader}
             />
@@ -149,6 +152,13 @@ export default function VideoRenderingComponent() {
             </div>
           </div>
         )}
+        <div
+          className={
+            useYoutube ? "visible " + style.centerfull : "invisible max-h-0"
+          }
+        >
+          <YoutubeFormComponent></YoutubeFormComponent>
+        </div>
       </div>
     </div>
   );
