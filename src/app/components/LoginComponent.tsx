@@ -12,7 +12,7 @@ export default function Component() {
     );
   }
   return (
-    <div className="text-right grid grid-rows-1 grid-flow-col">
+    <div className="text-right grid grid-rows-1 grid-flow-col max-w-l">
       <p>Not signed in</p>
       <button onClick={() => signIn()}>Sign in</button>
     </div>

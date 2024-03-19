@@ -5,6 +5,10 @@ import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { RefObject, useRef, useState } from "react";
 import style from "../home.module.css";
 import FileUploadComponent from "./fileUploadComponent";
+import { RadioGroup } from "@radix-ui/react-radio-group";
+import { RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import ConvertionSelectorComponent from "./ConvertionSelectorComponent";
 
 export default function VideoRenderingComponent() {
   const [loaded, setLoaded] = useState(false);
@@ -14,6 +18,7 @@ export default function VideoRenderingComponent() {
   const [messageRef, setMessageRef] = useState("Creating video...");
   const [startConverting, setStartConverting] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
+  const [useYoutube, setUseYoutube] = useState(false);
   const audio = useRef<any>(null);
   const video = useRef<any>(null);
 
@@ -91,6 +96,14 @@ export default function VideoRenderingComponent() {
     });
   };
 
+  const onConvertionSelectorChange = (value: string) => {
+    if (value === "youtube") {
+      setUseYoutube(true);
+    } else {
+      setUseYoutube(false);
+    }
+  };
+
   const onSubmit = () => {
     if (audio.current && video.current) {
       transcode();
@@ -121,6 +134,11 @@ export default function VideoRenderingComponent() {
             <FileUploadComponent
               onChangesInFileUploader={onChangesInFileUploader}
             />
+
+            <ConvertionSelectorComponent
+              onConvertionSelectorChange={onConvertionSelectorChange}
+            ></ConvertionSelectorComponent>
+
             <div className={style.center}>
               <button
                 onClick={onSubmit}
