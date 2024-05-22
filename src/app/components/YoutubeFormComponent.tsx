@@ -76,7 +76,7 @@ export default function YoutubeFormComponent() {
                 <Textarea placeholder="..." {...field} />
               </FormControl>
               <FormDescription>
-                The tags for your video. Seperate with ","
+                The tags for your video. Seperate with &quot; , &quot;
               </FormDescription>
               <FormMessage />
             </FormItem>
